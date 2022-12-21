@@ -2,13 +2,14 @@ import styles from "./Post.module.css";
 import foto from "../assets/imagem-perfil.jpg";
 import { Placeholder } from "phosphor-react";
 import { Comment } from "./Comment";
+import { Avatar } from "./avatar";
 
 export function Post() {
   return (
     <article className={styles.Post}>
       <header>
         <div className={styles.author}>
-          <img src={foto} />
+        <Avatar src="https://github.com/trajano177.png" />
 
           <div className={styles.authorInfo}>
             <strong>Matheus Trajano</strong>
