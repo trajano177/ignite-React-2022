@@ -60,15 +60,13 @@ function App() {
     <div className={styles.wrapper}>
       <Sidebar />
       <main>
-      <Post
-      author="Matheus Trajano"
-      content="lorem ipsum dolor sit amet, consectetur adipiscing elite"
-      />
-
-      <Post 
-      author="Gabriel lorem"
-      content="um novo post legal"
-      />
+      {posts.map(post => {
+        return (<Post
+            author={post.author}
+            content={post.content}
+            publishedAt={post.publishedAt}
+          />)
+      })}
       </main>
     </div>
   </div>
