@@ -3,11 +3,26 @@ import ptBR from 'date-fns/locale/pt-BR'
 import styles from "./Post.module.css";
 import { Comment } from "./Comment";
 import { Avatar } from "./avatar";
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 
+interface Author {
+  name: string;
+  role:string;
+  avatarUrl:string;
+  }
 
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
 
-export function Post({ author, publishedAt, content}) {
+interface PostProps {
+    author: Author;
+    publishedAt: Date;
+    content: Content[];
+  }
+
+export function Post({ author, publishedAt, content}: PostProps) {
 
   const [comments, setComments] = useState([
     'Post muito bacana, hein?!'
@@ -24,20 +39,25 @@ export function Post({ author, publishedAt, content}) {
     addSuffix:true,
   })
 
-  function handleCreateNewComment() {
-    event.preventDefault()
+  function handleCreateNewComment(event: FormEvent) {
+    event.preventDefault();
 
     //imutalibilidade
     setComments([...comments, newCommentText]);
     setNewCommentText('');
   }
 
-  function handleNewCommentChange() {
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('');
     setNewCommentText (event.target.value);
+  }
+
+  function handleNewCommentInvalid (event: InvalidEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('Esse campo é obrigatório!')
   }
   
 
-  function deleteComment( commentToDelete) {
+  function deleteComment( commentToDelete: string) {
 
     const commentsWithoutDeletedOn = comments.filter( comment => {
       return comment !== commentToDelete;
@@ -45,6 +65,8 @@ export function Post({ author, publishedAt, content}) {
     //imutabilidade --> as variaveis não sofrem mutações, nos criamos um novo valor(um novo espaço na memória)
     setComments(commentsWithoutDeletedOn)
   }
+
+  const isNewCommentEmpty = newCommentText.length === 0;
 
   //estado = variáveis que eu quero que o componente monitore
 
@@ -84,10 +106,14 @@ export function Post({ author, publishedAt, content}) {
         placeholder="Deixe seu comentário" 
         value={newCommentText}
         onChange={handleNewCommentChange}
+        onInvalid={handleNewCommentInvalid}
+        required
         />
 
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentEmpty}>
+            Publicar
+            </button>
         </footer>
       </form>
 
